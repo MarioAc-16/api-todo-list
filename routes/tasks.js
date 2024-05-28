@@ -5,6 +5,7 @@ let tasks = [];
 
 router.get('/getTasks', function(req, res, next){
     res.json(tasks);
+    res.status(200).json(tasks);
 })
 router.post('/addTasks', function(req, res, next){
     let timestamp = Date.now()+Math.random();
@@ -23,6 +24,7 @@ router.delete('/removeTasks/:id', function(req,  res, next){
         let id = req.params.id;
         tasks = tasks.filter(tasks => tasks.id !== id);
         res.json(tasks);
+        res.status(200).json(tasks);
     } else {
         res.status(400).json({error:"No se estan enviado los datos correctos"})
     }
