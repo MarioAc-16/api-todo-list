@@ -11,6 +11,9 @@ var goalsRouter = require('./routes/goals');
 const router = express.Router();
 var cors = require('cors');
 var app = express();
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/todolist')
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

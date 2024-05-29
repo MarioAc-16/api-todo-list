@@ -1,30 +1,36 @@
 var express = require('express');
 var router = express.Router();
+const mongoose = require('mongoose');
+
+const goalInit = mongoose.model('goals',{
+    name:String,
+    description:String,
+    dueDate:String
+},'goals');
 
 let goals = [];
 
 router.get('/getGoals', function(req, res, next){
-    res.json(goals);
-    res.status(200).json(goals);
+    goalInit.find({}).then((response)=>
+        res.status(200).json(response)
+        ).catch((err)=>res.status(500).json(err));
 })
 router.post('/addGoals', function(req, res, next){
-    if (req.body && req.body.name && req.body.description && req.body.dueDate){
-        let timestamp = Date.now()+Math.random();
-        req.body.id = timestamp.toString();
-        goals.push(req.body);
-        res.json(goals);
-        res.status(200).json(goals);
+    if (req.body && req.body.name && req.body.description && req.body.dueDate) {
+        const goal = new goalInit(req.body);
+        goal.save().then(()=>
+            res.status(200).json({})
+        ).catch((err)=>res.status(500).json(err));
     } else {
-        res.status(400).json({error:"No se estan enviado los datos correctos"})
+        res.status(400).json({error:"No se estan enviando los datos necesarios"})
     }
 });
 
 router.delete('/removeGoals/:id', function(req,  res, next){
     if (req.params && req.params.id) {
         let id = req.params.id;
-        goals = goals.filter(goals => goals.id !== id);
-        res.json(goals);
-        res.status(200).json(goals);
+        goalInit.deleteOne({_id:new mongoose.Types.ObjectId(id)}).then((response)=> {res.status(200).json(response);
+        }).catch((err)=>res.status(500).json(err));
     } else {
         res.status(400).json({error:"No se estan enviado los datos correctos"})
     }
